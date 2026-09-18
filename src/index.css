@@ -1,1 +1,52 @@
+/* Add this Google Fonts import to the very top of your index.css (above @import "tailwindcss";) */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 @import "tailwindcss";
+
+/* If you're on Tailwind v4, add this @theme block right after your tailwind import
+   so `font-display` and `font-sans` classes work in LandingPage.jsx.
+   If you're on Tailwind v3, instead add these fonts to your tailwind.config.js
+   under theme.extend.fontFamily. */
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Custom classes used inside LandingPage.jsx — add these anywhere in index.css */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to right, transparent, black 50%, black);
+}
+
+.eyebrow {
+  color: #9f263d;
+  font-size: 0.75rem; /* 12px — matches text-xs so it doesn't add a 13th distinct font size */
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.section-title {
+  color: #13203e;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.feature-card::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #9f263d;
+  content: "";
+  transition: width 250ms ease;
+}
+
+.feature-card:hover::after {
+  width: 100%;
+}
