@@ -1,5 +1,13 @@
 from fastapi import FastAPI
-app = FastAPI(title="API")
+
+from app.routes.auth import router as auth_router
+
+
+app = FastAPI(title="VenueVault API")
+
+app.include_router(auth_router)
+
+
 @app.get("/")
 def root():
     return {"message": "VenueVault Backend is running"}
