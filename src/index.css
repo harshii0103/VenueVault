@@ -55,3 +55,10 @@
 @keyframes auth-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 .auth-enter { animation: auth-enter 0.4s ease-out both; }
 @media (prefers-reduced-motion: reduce) { .auth-enter { animation: none; } }
+
+/* App shell: skeleton shimmer + page entrance (both off for reduced motion) */
+.skeleton { background: linear-gradient(90deg, #e8ecf1 25%, #f4f6f9 50%, #e8ecf1 75%); background-size: 200% 100%; animation: shimmer 1.3s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.page-enter { animation: page-enter 0.3s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .skeleton, .page-enter { animation: none; } }

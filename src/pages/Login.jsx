@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { currentUser } from '../data/mockData'
 import { AuthLayout, TextField, PasswordField, Segmented, Banner, SubmitButton } from '../components/auth'
 
 // TODO: replace with your real API call (return { ok, message }).
@@ -10,6 +12,8 @@ async function authenticate() {
 
 export default function Login() {
   const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
+  const { login } = useAuth()
   const portal = params.get('portal') === 'admin' ? 'admin' : 'student'
   const [form, setForm] = useState({ identifier: '', password: '', remember: false })
   const [errors, setErrors] = useState({})
@@ -29,8 +33,9 @@ export default function Login() {
     try {
       const res = await authenticate({ ...form, portal })
       if (!res.ok) throw new Error(res.message || 'Incorrect email/ID or password.')
-      // TODO: store token/session, then navigate to the student or admin dashboard.
-      setStatus({ loading: false, error: '', success: true })
+      // TODO (backend): use the real user/token from the API response instead of currentUser.
+      if (portal === 'student') { login(currentUser); navigate('/dashboard'); return }
+      setStatus({ loading: false, error: '', success: true }) // admin dashboard comes in a later step
     } catch (err) {
       setStatus({ loading: false, error: err.message || 'Something went wrong. Please try again.', success: false })
     }
