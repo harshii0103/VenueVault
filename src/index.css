@@ -50,3 +50,8 @@
 .feature-card:hover::after {
   width: 100%;
 }
+
+/* Auth pages: single entrance, respects reduced motion */
+@keyframes auth-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.auth-enter { animation: auth-enter 0.4s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .auth-enter { animation: none; } }
