@@ -6,16 +6,12 @@ const paths = {
   calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /><path d="m9 16 2 2 4-5" /></>,
   check: <path d="m5 12 4 4L19 6" />,
   chevron: <path d="m9 18 6-6-6-6" />,
-  facebook: <path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v5h4v-5h3l1-4h-4V9c0-.7.3-1 1-1Z" />,
-  instagram: <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><path d="M17.5 6.5h.01" /></>,
-  linkedin: <><path d="M6 9v12M6 5v.01M10 21v-7a4 4 0 0 1 8 0v7M10 9v12" /></>,
   mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,
   map: <><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2" /></>,
   paper: <><path d="M6 2h9l4 4v16H6z" /><path d="M14 2v5h5M9 13l2 2 4-4" /></>,
   people: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>,
   search: <><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></>,
   spark: <><path d="m12 3-1.4 4.1a5 5 0 0 1-3.1 3.1L3 12l4.5 1.8a5 5 0 0 1 3.1 3.1L12 21l1.4-4.1a5 5 0 0 1 3.1-3.1L21 12l-4.5-1.8a5 5 0 0 1-3.1-3.1Z" /></>,
-  twitter: <path d="M22 5.9c-.7.3-1.5.5-2.3.6a4 4 0 0 0-7 2.7v.9a11.4 11.4 0 0 1-8.3-4.2S.8 14 8.5 17.4A11.5 11.5 0 0 1 2 19.2c7.7 4.3 17.1 0 17.1-10 0-.2 0-.4-.1-.6.8-.8 1.5-1.6 2-2.7Z" />,
 };
 
 function Icon({ name, className = "h-5 w-5" }) {
@@ -62,7 +58,16 @@ const venues = [
 
 export default function Home() {
   const now = new Date();
-  const monthYear = now.toLocaleString("en-US", { month: "long", year: "numeric" });
+  const dow = (now.getDay() + 6) % 7; // Mon = 0
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - dow + (dow > 4 ? 7 : 0));
+  const calendarDays = Array.from({ length: 10 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + Math.floor(i / 5) * 7 + (i % 5));
+    return d.getDate();
+  });
+  const todayIndex = dow > 4 ? 0 : dow;
+  const monthYear = monday.toLocaleString("en-US", { month: "long", year: "numeric" });
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f7f8fa] font-sans text-[#15213d]">
       <header className="absolute inset-x-0 top-0 z-30">
@@ -151,10 +156,10 @@ export default function Home() {
                     </div>
                     <div className="mt-5 grid grid-cols-5 gap-1.5 text-center">
                       {["MON", "TUE", "WED", "THU", "FRI"].map((day) => <span key={day} className="pb-2 text-xs font-bold text-slate-400">{day}</span>)}
-                      {[12, 13, 14, 15, 16, 19, 20, 21, 22, 23].map((date) => (
-                        <div key={date} className={`relative h-12 rounded-md border pt-2 text-xs font-semibold ${date === 15 ? "border-[#9f263d] bg-[#9f263d] text-white" : "border-slate-200 bg-white text-slate-500"}`}>
+                      {calendarDays.map((date, i) => (
+                        <div key={i} className={`relative h-12 rounded-md border pt-2 text-xs font-semibold ${i === todayIndex ? "border-[#9f263d] bg-[#9f263d] text-white" : "border-slate-200 bg-white text-slate-500"}`}>
                           {date}
-                          {[13, 16, 20, 22].includes(date) && <span className={`absolute bottom-2 left-1/2 h-1 w-5 -translate-x-1/2 rounded-full ${date === 16 ? "bg-emerald-400" : "bg-[#d2697d]"}`} />}
+                          {[1, 4, 6, 8].includes(i) && i !== todayIndex && <span className={`absolute bottom-2 left-1/2 h-1 w-5 -translate-x-1/2 rounded-full ${i === 4 ? "bg-emerald-400" : "bg-[#d2697d]"}`} />}
                         </div>
                       ))}
                     </div>
@@ -224,12 +229,9 @@ export default function Home() {
           <div>
             <Logo light />
             <p className="mt-5 max-w-xs text-sm leading-6 text-slate-400">Intelligent venue booking for a connected, efficient, and paperless campus.</p>
-            <div className="mt-6 flex gap-2.5">
-              {["linkedin", "twitter", "instagram", "facebook"].map((icon) => <a key={icon} href="#" aria-label={icon} className="grid h-9 w-9 place-items-center rounded-lg bg-white/[.07] text-slate-300 transition hover:bg-[#9f263d] hover:text-white"><Icon name={icon} className="h-4 w-4" /></a>)}
-            </div>
           </div>
           <div><h3 className="text-xs font-bold tracking-[.12em] text-white">QUICK LINKS</h3><div className="mt-5 flex flex-col gap-3 text-sm text-slate-400"><a href="#home">Home</a><a href="#venues">Venues</a></div></div>
-          <div><h3 className="text-xs font-bold tracking-[.12em] text-white">PLATFORM</h3><div className="mt-5 flex flex-col gap-3 text-sm text-slate-400"><Link to="/login">Student portal</Link><Link to="/login?portal=admin">Admin portal</Link><a href="#">Venue policies</a><a href="#">Support</a></div></div>
+          <div><h3 className="text-xs font-bold tracking-[.12em] text-white">PLATFORM</h3><div className="mt-5 flex flex-col gap-3 text-sm text-slate-400"><Link to="/login">Student portal</Link><Link to="/login?portal=admin">Admin portal</Link><a href="mailto:help@venuevault.edu">Support</a></div></div>
           {/* Colour merge: #d5576e -> #e26278 (reuse the hero accent instead of a near-duplicate shade) */}
           <div><h3 className="text-xs font-bold tracking-[.12em] text-white">CONTACT</h3><div className="mt-5 flex flex-col gap-4 text-sm text-slate-400"><p className="flex gap-2.5"><Icon name="map" className="mt-0.5 h-4 w-4 shrink-0 text-[#e26278]" />Campus Administration Block</p><a href="mailto:help@venuevault.edu" className="flex gap-2.5"><Icon name="mail" className="h-4 w-4 shrink-0 text-[#e26278]" />help@venuevault.edu</a></div></div>
         </div>

@@ -66,7 +66,7 @@ export default function Login() {
             <input type="checkbox" checked={form.remember} onChange={set('remember')} className="rounded border-slate-300 text-[#9f263d] focus:ring-[#9f263d]" />
             Remember me
           </label>
-          <a href="#" className="font-semibold text-[#9f263d] hover:underline">Forgot password?</a>
+          <Link to="/forgot-password" className="font-semibold text-[#9f263d] hover:underline">Forgot password?</Link>
         </div>
         <SubmitButton loading={status.loading}>{status.loading ? 'Signing in…' : 'Login'}</SubmitButton>
       </form>
