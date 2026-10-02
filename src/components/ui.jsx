@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { Sun, Moon } from 'lucide-react'
 
 const chip = {
   pending: 'bg-amber-50 text-amber-700 ring-amber-200',
@@ -87,5 +88,35 @@ export function Toggle({ checked, onChange, label }) {
     <button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)} className={`relative h-6 w-11 shrink-0 rounded-full transition ${checked ? 'bg-[#9f263d]' : 'bg-slate-300'}`}>
       <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${checked ? 'left-[22px]' : 'left-0.5'}`} />
     </button>
+  )
+}
+
+export function ThemeToggle({ dark, onChange }) {
+  return (
+    <button type="button" role="switch" aria-checked={dark} aria-label="Dark mode" onClick={() => onChange(!dark)}
+      className="relative h-9 w-[68px] shrink-0 rounded-full border border-slate-300 bg-gradient-to-b from-slate-300 to-slate-200 shadow-inner dark:border-white/10 dark:from-[#0b1220] dark:to-[#18233a]">
+      <span className={`absolute top-1 grid h-7 w-7 place-items-center rounded-full bg-[#fffdfb] text-amber-500 shadow-md ring-1 ring-black/5 transition-all duration-300 dark:bg-[#2a3756] dark:text-sky-200 dark:ring-white/10 ${dark ? 'left-[36px]' : 'left-1'}`}>
+        {dark ? <Moon size={15} /> : <Sun size={15} />}
+      </span>
+    </button>
+  )
+}
+
+export function Dropdown({ trigger, label, triggerClass = '', width = 'w-72', children }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  useEffect(() => {
+    if (!open) return
+    const away = (e) => { if (!ref.current?.contains(e.target)) setOpen(false) }
+    const esc = (e) => e.key === 'Escape' && setOpen(false)
+    document.addEventListener('mousedown', away)
+    document.addEventListener('keydown', esc)
+    return () => { document.removeEventListener('mousedown', away); document.removeEventListener('keydown', esc) }
+  }, [open])
+  return (
+    <div ref={ref} className="relative">
+      <button type="button" aria-label={label} aria-expanded={open} onClick={() => setOpen(!open)} className={triggerClass}>{trigger}</button>
+      {open && <div onClick={() => setOpen(false)} className={`page-enter absolute right-0 z-40 mt-2 ${width} rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-[#13203e]/10`}>{children}</div>}
+    </div>
   )
 }

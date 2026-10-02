@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Landmark, Eye, EyeOff } from 'lucide-react'
+import { useTheme } from '../hooks/useTheme'
+import { ThemeToggle } from './ui'
 
 export const inputCls = (invalid) =>
   `w-full rounded-lg border px-4 py-2.5 text-sm text-[#13203e] placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
@@ -10,8 +12,10 @@ export const inputCls = (invalid) =>
   }`
 
 export function AuthLayout({ title, subtitle, children, footer }) {
+  const [dark, setDark] = useTheme()
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f7f4f3] px-4 py-10 font-sans">
+    <div className={`${dark ? 'dark' : ''} relative min-h-screen overflow-hidden bg-[#f7f4f3] px-4 py-10 font-sans`}>
+      <div className="absolute right-4 top-4 z-10"><ThemeToggle dark={dark} onChange={setDark} /></div>
       <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-32 h-96 w-96 rounded-full bg-[#9f263d]/20 blur-3xl" />
       <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -right-24 h-96 w-96 rounded-full bg-[#13203e]/20 blur-3xl" />
       <div className="auth-enter relative mx-auto w-full max-w-md">

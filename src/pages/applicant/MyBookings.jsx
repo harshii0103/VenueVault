@@ -13,7 +13,8 @@ export default function MyBookings() {
   const [open, setOpen] = useState(null)
   const [confirming, setConfirming] = useState(false)
   const tab = tabs.some(([k]) => k === sp.get('status')) ? sp.get('status') : 'all'
-  const list = bookings.filter((b) => tab === 'all' || tabOf(b) === tab)
+  const q = (sp.get('q') || '').trim().toLowerCase()
+  const list = bookings.filter((b) => (tab === 'all' || tabOf(b) === tab) && (!q || [b.event, b.venue, b.id].some((s) => s.toLowerCase().includes(q))))
   const close = () => { setOpen(null); setConfirming(false) }
   const doCancel = () => { cancelBooking(open.id); toast('Request cancelled'); close(); refresh((n) => n + 1) }
 
@@ -26,6 +27,8 @@ export default function MyBookings() {
             className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-semibold transition ${tab === k ? 'bg-[#13203e] text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'}`}>{label}</button>
         ))}
       </div>
+
+      {q && <p className="text-sm text-slate-500">Results for “{sp.get('q')}” · <button onClick={() => setSp({}, { replace: true })} className="font-semibold text-[#9f263d] hover:underline">Clear</button></p>}
 
       {list.length === 0 ? (
         <EmptyState title="Nothing here yet" text="No bookings in this category." action={<Link to="/dashboard/venues" className="text-sm font-semibold text-[#9f263d] hover:underline">Book a venue →</Link>} />

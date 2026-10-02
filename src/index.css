@@ -74,3 +74,36 @@
 .drawer-in { animation: drawer-in 0.25s ease-out both; }
 .fade-in { animation: fade-in 0.2s ease-out both; }
 @media (prefers-reduced-motion: reduce) { .drawer-in, .fade-in { animation: none; } }
+
+/* ---------- Dark mode (applied to the app shell and auth pages via a .dark wrapper) ---------- */
+@custom-variant dark (&:where(.dark, .dark *));
+.dark { color-scheme: dark; }
+.dark .bg-white { background-color: #131c2e; }
+.dark .bg-white\/75 { background-color: rgb(19 28 46 / 0.75); }
+.dark .bg-white\/90 { background-color: rgb(19 28 46 / 0.92); }
+.dark.bg-\[\#f7f4f3\], .dark .bg-\[\#f7f4f3\] { background-color: #0b1220; }
+.dark.text-\[\#13203e\] { color: #e6ebf5; }
+.dark .bg-\[\#f7f4f3\]\/80 { background-color: rgb(11 18 32 / 0.8); }
+.dark .bg-slate-100, .dark .hover\:bg-slate-100:hover, .dark .hover\:bg-slate-50:hover { background-color: #1b2740; }
+.dark .text-\[\#13203e\], .dark .text-\[\#101c38\] { color: #e6ebf5; }
+.dark .text-slate-700, .dark .text-slate-600 { color: #cbd5e1; }
+.dark .text-slate-500 { color: #94a3b8; }
+.dark .text-slate-400 { color: #7c8aa5; }
+.dark main .text-slate-300 { color: #3b4864; }
+.dark .text-\[\#9f263d\] { color: #ec7b93; }
+.dark .border-slate-200, .dark .border-slate-300, .dark .border-slate-200\/70, .dark .border-slate-200\/80, .dark .border-white\/70 { border-color: #25314a; }
+.dark .border-slate-100, .dark .divide-slate-100 > :not(:last-child) { border-color: #1f2a40; }
+.dark input, .dark select, .dark textarea { background-color: #0f1829; color: #e6ebf5; }
+.dark input::placeholder, .dark textarea::placeholder { color: #64748b; }
+.dark .skeleton { background: linear-gradient(90deg, #16213a 25%, #1d2a47 50%, #16213a 75%); background-size: 200% 100%; }
+.dark .bg-amber-50 { background-color: rgb(245 158 11 / 0.14); }
+.dark .bg-emerald-50 { background-color: rgb(16 185 129 / 0.14); }
+.dark .bg-red-50 { background-color: rgb(239 68 68 / 0.14); }
+.dark .text-amber-800, .dark .text-amber-700, .dark .text-amber-600 { color: #fbbf24; }
+.dark .text-emerald-800, .dark .text-emerald-700, .dark .text-emerald-600 { color: #34d399; }
+.dark .text-red-800, .dark .text-red-700, .dark .text-red-600 { color: #f87171; }
+.dark .border-amber-200, .dark .ring-amber-200 { border-color: rgb(245 158 11 / 0.3); --tw-ring-color: rgb(245 158 11 / 0.3); }
+.dark .border-emerald-200, .dark .ring-emerald-200 { border-color: rgb(16 185 129 / 0.3); --tw-ring-color: rgb(16 185 129 / 0.3); }
+.dark .border-red-200, .dark .ring-red-200 { border-color: rgb(239 68 68 / 0.3); --tw-ring-color: rgb(239 68 68 / 0.3); }
+.dark .bg-emerald-100 { background-color: rgb(16 185 129 / 0.2); }
+.dark .ring-slate-200 { --tw-ring-color: #25314a; }
