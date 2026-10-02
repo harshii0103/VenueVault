@@ -11,8 +11,10 @@ export const inputCls = (invalid) =>
 
 export function AuthLayout({ title, subtitle, children, footer }) {
   return (
-    <div className="min-h-screen bg-[#f7f8fa] px-4 py-10 font-sans">
-      <div className="auth-enter mx-auto w-full max-w-md">
+    <div className="relative min-h-screen overflow-hidden bg-[#f7f4f3] px-4 py-10 font-sans">
+      <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-32 h-96 w-96 rounded-full bg-[#9f263d]/20 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -right-24 h-96 w-96 rounded-full bg-[#13203e]/20 blur-3xl" />
+      <div className="auth-enter relative mx-auto w-full max-w-md">
         <Link to="/" className="mb-6 inline-block text-sm font-medium text-slate-500 hover:text-[#9f263d]">
           ← Back to home
         </Link>
@@ -23,7 +25,7 @@ export function AuthLayout({ title, subtitle, children, footer }) {
           <h1 className="font-display text-2xl font-bold tracking-[-0.02em] text-[#101c38]">{title}</h1>
           <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm sm:p-8">{children}</div>
+        <div className="rounded-2xl border border-white/70 bg-white/75 p-7 shadow-xl shadow-[#13203e]/10 backdrop-blur-xl sm:p-8">{children}</div>
         {footer}
         <p className="mt-8 text-center text-xs text-slate-500">Powered by Edge Computing · Maitreyi College</p>
       </div>

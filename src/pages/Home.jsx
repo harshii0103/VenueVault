@@ -71,7 +71,7 @@ export default function Home() {
   focus.setDate(monday.getDate() + todayIndex);
   const monthYear = focus.toLocaleString("en-US", { month: "long", year: "numeric" });
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f7f8fa] font-sans text-[#15213d]">
+    <div className="min-h-screen overflow-x-hidden bg-[#f7f4f3] font-sans text-[#15213d]">
       <header className="absolute inset-x-0 top-0 z-30">
         <nav className="mx-auto flex h-20 max-w-[1180px] items-center justify-between px-5 lg:px-8" aria-label="Main navigation">
           <Logo light />
