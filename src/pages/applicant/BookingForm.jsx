@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { TriangleAlert, Check } from 'lucide-react'
 import { Field, TextField, inputCls, Banner } from '../../components/auth'
 import { useToast } from '../../components/ui'
-import { venues, getVenue, timeOptions, todayISO, fromISO, formatDate, fmtRange, findConflict, suggestAlternatives, addBooking } from '../../data/mockData'
+import { formatDay, venues, getVenue, timeOptions, todayISO, fromISO, formatDate, fmtRange, findConflict, suggestAlternatives, addBooking } from '../../data/mockData'
 
 const steps = ['Venue & time', 'Event details', 'Review']
 const reqs = ['Projector', 'Mic', 'Board']
@@ -104,7 +104,7 @@ export default function BookingForm() {
               <option value="">Select a venue</option>{venues.map((v) => <option key={v.id} value={v.id}>{v.name} ({v.capacity} seats)</option>)}
             </select>
           </Field>
-          <Field id="date" label="Date" error={errors.date}><input id="date" type="date" min={todayISO()} value={f.date} onChange={set('date')} className={inputCls(errors.date)} /></Field>
+          <Field id="date" label="Date" error={errors.date} hint={formatDay(f.date)}><input id="date" type="date" min={todayISO()} value={f.date} onChange={set('date')} className={inputCls(errors.date)} /></Field>
           <div className="grid grid-cols-2 gap-4">
             <Field id="start" label="From"><select id="start" value={f.start} onChange={set('start')} className={inputCls()}>{timeOptions.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}</select></Field>
             <Field id="end" label="To" error={errors.end}><select id="end" value={f.end} onChange={set('end')} className={inputCls(errors.end)}>{timeOptions.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}</select></Field>

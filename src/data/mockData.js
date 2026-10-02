@@ -1,7 +1,7 @@
 // Demo data only. The backend team replaces these with API calls (see src/services).
 const addDays = (n) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n); return d }
 
-export const currentUser = { name: 'Harshita', email: 'harshita@college.edu', role: 'applicant' }
+export const currentUser = { name: 'Harshita', email: 'harshita@college.edu', role: 'applicant', collegeId: '2024/1948', course: 'BSc Physical Science', semester: '4', phone: '' }
 
 // Most recent request first. status: pending | approved | rejected | draft
 export const bookings = [
@@ -68,7 +68,7 @@ export function suggestAlternatives(q, audience = 0) {
 // TODO (AI/backend): replace with the real recommendation model. Ideal hall is ~85% full.
 export function matchScore(v, audience) {
   if (!audience) return null
-  return Math.round(Math.max(55, 100 - Math.abs(0.85 - audience / v.capacity) * 60))
+  return Math.round(Math.max(20, 100 - Math.abs(0.85 - audience / v.capacity) * 90))
 }
 
 export function addBooking(b) {
@@ -77,3 +77,8 @@ export function addBooking(b) {
   bookings.unshift(booking)
   return booking
 }
+
+// ---------- Step 3 helpers ----------
+export const formatDay = (iso) => (iso ? fromISO(iso).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : '')
+export const takenSlots = () => [...bookings.filter((b) => ['pending', 'approved'].includes(b.status)), ...blocked]
+export function cancelBooking(id) { const b = bookings.find((x) => x.id === id); if (b) b.status = 'cancelled' } // TODO (backend)

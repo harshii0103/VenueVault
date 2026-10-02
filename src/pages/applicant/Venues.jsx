@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Users, Landmark, Sparkles } from 'lucide-react'
 import { Field, inputCls } from '../../components/auth'
 import { EmptyState } from '../../components/ui'
-import { venues, venueTypes, timeOptions, tomorrowISO, todayISO, findConflict, matchScore, fmtRange } from '../../data/mockData'
+import { formatDay, venues, venueTypes, timeOptions, tomorrowISO, todayISO, findConflict, matchScore, fmtRange } from '../../data/mockData'
 
 export default function Venues() {
   const navigate = useNavigate()
-  const [f, setF] = useState({ date: tomorrowISO(), start: 10, end: 12, audience: '', type: '' })
+  const [sp] = useSearchParams()
+  const [f, setF] = useState({ date: sp.get('date') || tomorrowISO(), start: 10, end: 12, audience: '', type: '' })
   const set = (k) => (e) => setF({ ...f, [k]: ['start', 'end'].includes(k) ? Number(e.target.value) : e.target.value })
   const audience = Number(f.audience) || 0
   const timeOk = f.start < f.end
@@ -19,7 +20,7 @@ export default function Venues() {
       const busy = !small && f.date && timeOk && !!findConflict({ venueId: v.id, date: f.date, start: f.start, end: f.end })
       return { v, state: small ? 'small' : busy ? 'busy' : 'free', score: matchScore(v, audience) }
     })
-    .sort((a, b) => (a.state === 'free' ? 0 : 1) - (b.state === 'free' ? 0 : 1) || (b.score || 0) - (a.score || 0))
+    .sort((a, b) => (a.state === 'free' ? 0 : 1) - (b.state === 'free' ? 0 : 1) || (b.score || 0) - (a.score || 0) || a.v.capacity - b.v.capacity)
   const best = audience && results[0]?.state === 'free' ? results[0].v.id : null
 
   const select = (id) => navigate(`/dashboard/book?${new URLSearchParams({ venue: id, date: f.date, from: f.start, to: f.end, audience: f.audience })}`)
@@ -32,7 +33,7 @@ export default function Venues() {
       </div>
 
       <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 sm:p-5 lg:grid-cols-5">
-        <Field id="date" label="Date"><input id="date" type="date" min={todayISO()} value={f.date} onChange={set('date')} className={inputCls()} /></Field>
+        <Field id="date" label="Date" hint={formatDay(f.date)}><input id="date" type="date" min={todayISO()} value={f.date} onChange={set('date')} className={inputCls()} /></Field>
         <Field id="start" label="From"><select id="start" value={f.start} onChange={set('start')} className={inputCls()}>{timeOptions.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}</select></Field>
         <Field id="end" label="To" error={!timeOk ? 'End must be after start.' : ''}><select id="end" value={f.end} onChange={set('end')} className={inputCls(!timeOk)}>{timeOptions.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}</select></Field>
         <Field id="audience" label="Audience"><input id="audience" type="number" min="1" placeholder="e.g. 120" value={f.audience} onChange={set('audience')} className={inputCls()} /></Field>

@@ -19,7 +19,10 @@ export default function Login() {
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState({ loading: false, error: '', success: false })
 
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
+  const set = (k) => (e) => {
+    setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
+    setErrors((er) => ({ ...er, [k]: undefined })) // clear this field's error as soon as the user edits it
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()

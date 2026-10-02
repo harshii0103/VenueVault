@@ -67,7 +67,9 @@ export default function Home() {
     return d.getDate();
   });
   const todayIndex = dow > 4 ? 0 : dow;
-  const monthYear = monday.toLocaleString("en-US", { month: "long", year: "numeric" });
+  const focus = new Date(monday);
+  focus.setDate(monday.getDate() + todayIndex);
+  const monthYear = focus.toLocaleString("en-US", { month: "long", year: "numeric" });
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f7f8fa] font-sans text-[#15213d]">
       <header className="absolute inset-x-0 top-0 z-30">

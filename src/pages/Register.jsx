@@ -21,7 +21,10 @@ export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', collegeId: '', type: 'student', dept: '', phone: '', password: '', confirm: '', terms: false })
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState({ loading: false, error: '', success: false })
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
+  const set = (k) => (e) => {
+    setForm({ ...form, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
+    setErrors((er) => ({ ...er, [k]: undefined })) // clear this field's error as soon as the user edits it
+  }
 
   const validate = () => {
     const e = {}

@@ -11,7 +11,8 @@ export function AuthProvider({ children }) {
   })
   const login = (u) => { sessionStorage.setItem('vv_user', JSON.stringify(u)); setUser(u) }
   const logout = () => { sessionStorage.removeItem('vv_user'); setUser(null) }
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>
+  const updateUser = (patch) => { const u = { ...user, ...patch }; sessionStorage.setItem('vv_user', JSON.stringify(u)); setUser(u) } // TODO (backend)
+  return <AuthContext.Provider value={{ user, login, logout, updateUser }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => useContext(AuthContext)

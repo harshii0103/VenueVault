@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 const chip = {
   pending: 'bg-amber-50 text-amber-700 ring-amber-200',
@@ -6,6 +6,7 @@ const chip = {
   rejected: 'bg-red-50 text-red-700 ring-red-200',
   draft: 'bg-slate-100 text-slate-600 ring-slate-200',
   past: 'bg-slate-100 text-slate-600 ring-slate-200',
+  cancelled: 'bg-slate-100 text-slate-500 ring-slate-200',
 }
 
 export function StatusChip({ status }) {
@@ -56,5 +57,35 @@ export function ToastProvider({ children }) {
         </div>
       )}
     </ToastContext.Provider>
+  )
+}
+
+export function Drawer({ open, onClose, title, children }) {
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, onClose])
+  if (!open) return null
+  return (
+    <div className="fixed inset-0 z-50">
+      <div onClick={onClose} className="fade-in absolute inset-0 bg-black/40" />
+      <aside role="dialog" aria-modal="true" aria-label={title} className="drawer-in absolute right-0 top-0 h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-2xl">
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <h2 className="font-display text-xl font-bold">{title}</h2>
+          <button onClick={onClose} aria-label="Close" className="rounded-lg px-2 py-1 text-xl leading-none text-slate-400 hover:bg-slate-100">×</button>
+        </div>
+        {children}
+      </aside>
+    </div>
+  )
+}
+
+export function Toggle({ checked, onChange, label }) {
+  return (
+    <button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)} className={`relative h-6 w-11 shrink-0 rounded-full transition ${checked ? 'bg-[#9f263d]' : 'bg-slate-300'}`}>
+      <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${checked ? 'left-[22px]' : 'left-0.5'}`} />
+    </button>
   )
 }
