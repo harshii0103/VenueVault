@@ -1,1 +1,109 @@
+/* Add this Google Fonts import to the very top of your index.css (above @import "tailwindcss";) */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap");
 @import "tailwindcss";
+
+/* If you're on Tailwind v4, add this @theme block right after your tailwind import
+   so `font-display` and `font-sans` classes work in LandingPage.jsx.
+   If you're on Tailwind v3, instead add these fonts to your tailwind.config.js
+   under theme.extend.fontFamily. */
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, ui-serif, serif;
+}
+
+/* Custom classes used inside LandingPage.jsx — add these anywhere in index.css */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to right, transparent, black 50%, black);
+}
+
+.eyebrow {
+  color: #9f263d;
+  font-size: 0.75rem; /* 12px — matches text-xs so it doesn't add a 13th distinct font size */
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.section-title {
+  color: #13203e;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.feature-card::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #9f263d;
+  content: "";
+  transition: width 250ms ease;
+}
+
+.feature-card:hover::after {
+  width: 100%;
+}
+
+/* Auth pages: single entrance, respects reduced motion */
+@keyframes auth-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.auth-enter { animation: auth-enter 0.4s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .auth-enter { animation: none; } }
+
+/* App shell: skeleton shimmer + page entrance (both off for reduced motion) */
+.skeleton { background: linear-gradient(90deg, #e8ecf1 25%, #f4f6f9 50%, #e8ecf1 75%); background-size: 200% 100%; animation: shimmer 1.3s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.page-enter { animation: page-enter 0.3s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .skeleton, .page-enter { animation: none; } }
+
+/* Success tick pop */
+@keyframes tick-pop { 0% { transform: scale(.5); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+.tick { animation: tick-pop 0.45s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .tick { animation: none; } }
+
+/* Drawer + overlay */
+@keyframes drawer-in { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.drawer-in { animation: drawer-in 0.25s ease-out both; }
+.fade-in { animation: fade-in 0.2s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .drawer-in, .fade-in { animation: none; } }
+
+/* ---------- Dark mode (applied to the app shell and auth pages via a .dark wrapper) ---------- */
+@custom-variant dark (&:where(.dark, .dark *));
+.dark { color-scheme: dark; }
+.dark .bg-white { background-color: #131c2e; }
+.dark .bg-white\/75 { background-color: rgb(19 28 46 / 0.75); }
+.dark .bg-white\/90 { background-color: rgb(19 28 46 / 0.92); }
+.dark.bg-\[\#f7f4f3\], .dark .bg-\[\#f7f4f3\] { background-color: #0b1220; }
+.dark.text-\[\#13203e\] { color: #e6ebf5; }
+.dark .bg-\[\#f7f4f3\]\/80 { background-color: rgb(11 18 32 / 0.8); }
+.dark .bg-slate-100, .dark .hover\:bg-slate-100:hover, .dark .hover\:bg-slate-50:hover { background-color: #1b2740; }
+.dark .text-\[\#13203e\], .dark .text-\[\#101c38\] { color: #e6ebf5; }
+.dark .text-slate-700, .dark .text-slate-600 { color: #cbd5e1; }
+.dark .text-slate-500 { color: #94a3b8; }
+.dark .text-slate-400 { color: #7c8aa5; }
+.dark main .text-slate-300 { color: #3b4864; }
+.dark .text-\[\#9f263d\] { color: #ec7b93; }
+.dark .border-slate-200, .dark .border-slate-300, .dark .border-slate-200\/70, .dark .border-slate-200\/80, .dark .border-white\/70 { border-color: #25314a; }
+.dark .border-slate-100, .dark .divide-slate-100 > :not(:last-child) { border-color: #1f2a40; }
+.dark input, .dark select, .dark textarea { background-color: #0f1829; color: #e6ebf5; }
+.dark input::placeholder, .dark textarea::placeholder { color: #64748b; }
+.dark .skeleton { background: linear-gradient(90deg, #16213a 25%, #1d2a47 50%, #16213a 75%); background-size: 200% 100%; }
+.dark .bg-amber-50 { background-color: rgb(245 158 11 / 0.14); }
+.dark .bg-emerald-50 { background-color: rgb(16 185 129 / 0.14); }
+.dark .bg-red-50 { background-color: rgb(239 68 68 / 0.14); }
+.dark .text-amber-800, .dark .text-amber-700, .dark .text-amber-600 { color: #fbbf24; }
+.dark .text-emerald-800, .dark .text-emerald-700, .dark .text-emerald-600 { color: #34d399; }
+.dark .text-red-800, .dark .text-red-700, .dark .text-red-600 { color: #f87171; }
+.dark .border-amber-200, .dark .ring-amber-200 { border-color: rgb(245 158 11 / 0.3); --tw-ring-color: rgb(245 158 11 / 0.3); }
+.dark .border-emerald-200, .dark .ring-emerald-200 { border-color: rgb(16 185 129 / 0.3); --tw-ring-color: rgb(16 185 129 / 0.3); }
+.dark .border-red-200, .dark .ring-red-200 { border-color: rgb(239 68 68 / 0.3); --tw-ring-color: rgb(239 68 68 / 0.3); }
+.dark .bg-emerald-100 { background-color: rgb(16 185 129 / 0.2); }
+.dark .ring-slate-200 { --tw-ring-color: #25314a; }

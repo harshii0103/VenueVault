@@ -1,178 +1,247 @@
-import { Link } from 'react-router-dom'
-import {
-  Landmark,
-  Search,
-  CalendarDays,
-  BrainCircuit,
-  ShieldCheck,
-  Users,
-  ArrowRight,
-  Mail,
-  Globe,
-  MessageCircle,
-} from 'lucide-react'
+import { Link } from "react-router-dom";
 
-const features = [
-  { icon: CalendarDays, title: 'Real-time Availability', desc: 'See live slot updates and book instantly.' },
-  { icon: BrainCircuit, title: 'AI-Powered Matching', desc: 'Find the best venue for your needs.' },
-  { icon: ShieldCheck, title: 'Secure & Trusted', desc: 'Verified venues and safe bookings.' },
-  { icon: Users, title: 'For a Better Campus Experience', desc: 'Making campus events simpler, smarter.' },
-]
+const paths = {
+  arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
+  building: <><path d="M3 21h18" /><path d="M6 21V8l6-4 6 4v13" /><path d="M9 12h.01M15 12h.01M9 16h.01M15 16h.01" /></>,
+  calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /><path d="m9 16 2 2 4-5" /></>,
+  check: <path d="m5 12 4 4L19 6" />,
+  chevron: <path d="m9 18 6-6-6-6" />,
+  mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,
+  map: <><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2" /></>,
+  paper: <><path d="M6 2h9l4 4v16H6z" /><path d="M14 2v5h5M9 13l2 2 4-4" /></>,
+  people: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>,
+  search: <><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></>,
+  spark: <><path d="m12 3-1.4 4.1a5 5 0 0 1-3.1 3.1L3 12l4.5 1.8a5 5 0 0 1 3.1 3.1L12 21l1.4-4.1a5 5 0 0 1 3.1-3.1L21 12l-4.5-1.8a5 5 0 0 1-3.1-3.1Z" /></>,
+};
+
+function Icon({ name, className = "h-5 w-5" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {paths[name]}
+    </svg>
+  );
+}
+
+function Logo({ light = false }) {
+  return (
+    <Link to="/" className="flex items-center gap-2.5" aria-label="VenueVault home">
+      <span className={`grid h-9 w-9 place-items-center rounded-xl ${light ? "bg-white/10 text-white" : "bg-[#121f3f] text-white"}`}>
+        <Icon name="building" className="h-5 w-5" />
+      </span>
+      <span className={`font-display text-xl font-bold tracking-[-0.03em] ${light ? "text-white" : "text-[#101c38]"}`}>
+        Venue<span className="text-[#9f263d]">Vault</span>
+      </span>
+    </Link>
+  );
+}
 
 const venues = [
-  { id: 1, tag: 'Outdoor', name: 'Amphitheater', capacity: '300+', desc: 'Perfect for open-air events, cultural fests and performances.' },
-  { id: 2, tag: 'Indoor', name: 'NSB Seminar Hall', capacity: '150', desc: 'Ideal for seminars, workshops and guest lectures.' },
-  { id: 3, tag: 'Indoor', name: 'New Auditorium', capacity: '500+', desc: 'Large indoor auditorium for major events and fests.' },
-  { id: 4, tag: 'Outdoor', name: 'Central Lawn', capacity: '500+', desc: 'Great for college fests, food stalls, exhibitions and more.' },
-]
+  {
+    name: "Amphitheater",
+    capacity: "500 seats",
+    image: "https://images.unsplash.com/photo-1763734281829-c4ec4b855998?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=85&w=1200",
+    alt: "Open-air stone amphitheater surrounded by trees",
+  },
+  {
+    name: "NSB Seminar Hall",
+    capacity: "120 seats",
+    image: "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=85&w=1200",
+    alt: "Modern university lecture hall",
+  },
+  {
+    name: "New Auditorium",
+    capacity: "350 seats",
+    image: "https://images.unsplash.com/photo-1632012773667-b68d7bd59cc4?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&q=85&w=1200",
+    alt: "Large auditorium with rows of red seats",
+  },
+];
 
 export default function Home() {
+  const now = new Date();
+  const dow = (now.getDay() + 6) % 7; // Mon = 0
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - dow + (dow > 4 ? 7 : 0));
+  const calendarDays = Array.from({ length: 10 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + Math.floor(i / 5) * 7 + (i % 5));
+    return d.getDate();
+  });
+  const todayIndex = dow > 4 ? 0 : dow;
+  const focus = new Date(monday);
+  focus.setDate(monday.getDate() + todayIndex);
+  const monthYear = focus.toLocaleString("en-US", { month: "long", year: "numeric" });
   return (
-    <div className="bg-[#fdf6f2]">
+    <div className="min-h-screen overflow-x-hidden bg-[#f7f4f3] font-sans text-[#15213d]">
+      <header className="absolute inset-x-0 top-0 z-30">
+        <nav className="mx-auto flex h-20 max-w-[1180px] items-center justify-between px-5 lg:px-8" aria-label="Main navigation">
+          <Logo light />
+          <div className="hidden items-center gap-8 md:flex">
+            {["Home", "Venues", "Contact"].map((item, index) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                aria-current={index === 0 ? "page" : undefined}
+                className={`border-b-2 pb-1 text-sm font-medium transition hover:text-white ${index === 0 ? "border-[#e26278] text-white" : "border-transparent text-slate-300"}`}
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+          <div className="flex items-center gap-4">
+            <Link to="/login" className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:block">Login</Link>
+            <Link to="/register" className="rounded-xl bg-[#a42b43] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-black/15 transition hover:bg-[#b8334d]">Sign Up</Link>
+          </div>
+        </nav>
+      </header>
 
-      {/* ---------- NAVBAR ---------- */}
-      <nav className="flex items-center justify-between px-8 py-4 bg-white">
-        <div className="flex items-center gap-2">
-          <Landmark className="text-red-800" size={26} />
-          <h1 className="text-xl font-bold">
-            <span className="text-gray-900">Venue</span>
-            <span className="text-red-800">Vault</span>
-          </h1>
-        </div>
-
-        <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-          <Link to="/" className="text-red-800 border-b-2 border-red-800 pb-1">Home</Link>
-          <Link to="/venues" className="hover:text-red-800">Venues</Link>
-          <Link to="/about" className="hover:text-red-800">About</Link>
-          <Link to="/contact" className="hover:text-red-800">Contact</Link>
-          <Link to="/help" className="hover:text-red-800">Help</Link>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button className="text-gray-500">
-            <Search size={20} />
-          </button>
-          <Link to="/login" className="px-4 py-2 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50">
-            Login
-          </Link>
-          <Link to="/register" className="px-4 py-2 bg-red-800 text-white rounded-full text-sm font-medium hover:bg-red-900">
-            Register
-          </Link>
-        </div>
-      </nav>
-
-      {/* ---------- HERO SECTION ---------- */}
-      <section className="flex flex-col md:flex-row items-center justify-between px-8 py-16 gap-10">
-        <div className="max-w-lg">
-          <p className="text-red-800 font-semibold tracking-widest text-sm mb-2">
-            — YOUR CAMPUS. YOUR EVENTS.
-          </p>
-          <h1 className="text-5xl font-bold text-gray-900 leading-tight">
-            Book Campus <br />
-            Venues, <br />
-            <span className="text-red-800 italic">Instantly</span>
-          </h1>
-          <p className="text-gray-500 mt-5">
-            From fests to club meetings, find and book the perfect venue for your event — all in one place.
-          </p>
-          <button className="mt-6 flex items-center gap-2 bg-red-800 text-white px-6 py-3 rounded-full font-medium hover:bg-red-900">
-            Get Started <ArrowRight size={18} />
-          </button>
-        </div>
-
-        <div className="rounded-2xl overflow-hidden shadow-lg">
-          <img
-            src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600"
-            alt="Campus building"
-            className="w-full h-80 object-cover"
-          />
-        </div>
-      </section>
-
-      {/* ---------- FEATURES SECTION ---------- */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-6 px-8 py-10 bg-white">
-        {features.map((f, i) => {
-          const Icon = f.icon
-          return (
-            <div key={i} className="text-center md:text-left">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-red-50 mb-3 mx-auto md:mx-0">
-                <Icon className="text-red-800" size={22} />
+      <main>
+        <section id="home" className="relative bg-[#101c38] pb-28 pt-32 text-white lg:pb-32 lg:pt-40">
+          <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+            <div className="absolute -right-24 -top-32 h-[480px] w-[480px] rounded-full bg-[#9f263d]/18 blur-3xl" />
+            <div className="hero-grid absolute inset-0 opacity-30" />
+          </div>
+          <div className="relative mx-auto grid max-w-[1180px] items-center gap-16 px-5 lg:grid-cols-[1.02fr_.98fr] lg:px-8">
+            <div className="max-w-2xl">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[.07] px-3.5 py-2 text-xs font-semibold tracking-wide text-slate-200">
+                <span className="h-2 w-2 rounded-full bg-[#d9546c] shadow-[0_0_0_4px_rgba(217,84,108,.14)]" />
+                SMARTER CAMPUS OPERATIONS
               </div>
-              <h3 className="font-bold text-gray-900 mb-1">{f.title}</h3>
-              <p className="text-gray-500 text-sm">{f.desc}</p>
-            </div>
-          )
-        })}
-      </section>
-
-      {/* ---------- POPULAR VENUES SECTION ---------- */}
-      <section className="px-8 py-14">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-3xl font-bold text-gray-900">Popular Venues</h2>
-          <a href="/venues" className="flex items-center gap-1 text-red-800 font-medium text-sm">
-            View All Venues <ArrowRight size={16} />
-          </a>
-        </div>
-        <p className="text-gray-500 mb-8">Explore some of the most booked venues on campus.</p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {venues.map((v) => (
-            <div key={v.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="relative">
-                <img
-                  src={`https://source.unsplash.com/random/400x300?venue,${v.id}`}
-                  alt={v.name}
-                  className="w-full h-40 object-cover"
-                />
-                <span className="absolute top-2 left-2 bg-white text-xs px-2 py-1 rounded-full font-medium">
-                  {v.tag}
-                </span>
-              </div>
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900">{v.name}</h3>
-                <p className="flex items-center gap-1 text-gray-500 text-sm mb-2">
-                  <Users size={14} /> Capacity: {v.capacity}
-                </p>
-                <p className="text-gray-500 text-sm mb-4">{v.desc}</p>
-                <button className="w-full flex items-center justify-center gap-2 bg-red-800 text-white py-2 rounded-full text-sm font-medium hover:bg-red-900">
-                  Check Availability <ArrowRight size={16} />
-                </button>
+              <h1 className="font-display text-[clamp(3rem,6vw,5.4rem)] font-bold leading-[.98] tracking-[-0.055em]">
+                Book campus venues <span className="text-[#e26278]">in real time.</span>
+              </h1>
+              <p className="mt-7 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
+                Eliminate double bookings and paperwork with an agentic AI and edge-powered platform built for your campus.
+              </p>
+              {/* Fix 9 (Major): Student Portal is the single primary CTA (solid button); Admin Portal is
+                  now a lightweight text link so the two no longer compete for attention. */}
+              <div className="mt-9 flex flex-wrap items-baseline gap-5">
+                <Link to="/login" className="group inline-flex items-center gap-2 rounded-xl bg-[#a42b43] px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:bg-[#b8334d]">
+                  Student Portal <Icon name="arrow" className="h-4 w-4 transition group-hover:translate-x-0.5" />
+                </Link>
+                <Link to="/login?portal=admin" className="inline-flex items-baseline gap-1.5 text-sm font-semibold text-slate-300 transition hover:text-white">
+                  Admin Portal <Icon name="chevron" className="h-3.5 w-3.5 self-center" />
+                </Link>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* ---------- FOOTER ---------- */}
-      <footer className="bg-gray-900 text-white px-8 py-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center pb-6 border-b border-gray-700">
+            <div className="relative mx-auto w-full max-w-[550px]">
+              {/* Fix 3: rounded-[2rem] merged into the standard rounded-3xl token */}
+              <div className="absolute -inset-5 rounded-3xl bg-[#9f263d]/15 blur-2xl" />
+              {/* Fix 3: rounded-[1.4rem] merged into the standard rounded-2xl token */}
+              <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-[#f8fafc] shadow-2xl shadow-black/30">
+                <div className="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
+                  <div>
+                    <p className="text-xs font-bold tracking-[.15em] text-[#9f263d]">VENUEVAULT</p>
+                    <p className="mt-0.5 text-sm font-bold text-[#13203e]">Booking overview</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-500"><Icon name="search" className="h-4 w-4" /></span>
+                    <span className="grid h-8 w-8 place-items-center rounded-full bg-[#13203e] text-xs font-bold">AD</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-[64px_1fr] text-[#13203e]">
+                  <div className="flex flex-col items-center gap-5 border-r border-slate-200 bg-white py-5 text-slate-400">
+                    <span className="grid h-9 w-9 place-items-center rounded-lg bg-[#9f263d] text-white"><Icon name="calendar" className="h-4 w-4" /></span>
+                    <Icon name="building" className="h-4 w-4" /><Icon name="people" className="h-4 w-4" /><Icon name="paper" className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 p-4 sm:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-base font-bold">{monthYear}</p>
+                        {/* Fix 4: 10px -> text-xs (12px minimum for readable copy) */}
+                        <p className="text-xs text-slate-400">Campus venue calendar</p>
+                      </div>
+                      {/* Fix 11: this control is part of a decorative product-preview mockup, not a
+                          live action, so it's rendered as a non-interactive, aria-hidden span rather
+                          than a <button> to remove the false affordance. */}
+                      <span aria-hidden="true" className="rounded-lg bg-[#9f263d] px-3 py-2 text-xs font-bold text-white">+ New booking</span>
+                    </div>
+                    <div className="mt-5 grid grid-cols-5 gap-1.5 text-center">
+                      {["MON", "TUE", "WED", "THU", "FRI"].map((day) => <span key={day} className="pb-2 text-xs font-bold text-slate-400">{day}</span>)}
+                      {calendarDays.map((date, i) => (
+                        <div key={i} className={`relative h-12 rounded-md border pt-2 text-xs font-semibold ${i === todayIndex ? "border-[#9f263d] bg-[#9f263d] text-white" : "border-slate-200 bg-white text-slate-500"}`}>
+                          {date}
+                          {[1, 4, 6, 8].includes(i) && i !== todayIndex && <span className={`absolute bottom-2 left-1/2 h-1 w-5 -translate-x-1/2 rounded-full ${i === 4 ? "bg-emerald-400" : "bg-[#d2697d]"}`} />}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex items-center justify-between rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2.5">
+                      {/* Fix 5 + colour merge: 10px -> text-xs, emerald-800 -> emerald-700 */}
+                      <span className="flex items-center gap-2 text-xs font-bold text-emerald-700"><span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-white"><Icon name="check" className="h-3 w-3" /></span>No booking conflicts</span>
+                      <span className="text-xs text-emerald-600">Live</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Fix 6: "AI RECOMMENDATION" -> sentence case + text-xs, removes the long all-caps run */}
+              <div className="absolute -bottom-7 -left-5 hidden items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-[#13203e] shadow-xl sm:flex">
+                <span className="grid h-9 w-9 place-items-center rounded-lg bg-[#f8e8ec] text-[#9f263d]"><Icon name="spark" className="h-4 w-4" /></span>
+                <div><p className="text-xs text-slate-400">AI recommendation</p><p className="text-xs font-bold">NSB Hall is your best match</p></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="venues" className="bg-white py-24 lg:py-28">
+          <div className="mx-auto max-w-[1180px] px-5 lg:px-8">
+            {/* Fix 10: heading and "View all venues" now share one flex row with items-baseline,
+                so the link's baseline aligns exactly with the h2's baseline instead of the
+                bottom of the whole (taller) text block. */}
+            <div className="flex flex-col gap-5">
+              <p className="eyebrow">EXPLORE SPACES</p>
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-baseline sm:justify-between">
+                <h2 className="section-title">Popular venues</h2>
+                <Link to="/login" className="inline-flex items-center gap-2 text-sm font-bold text-[#9f263d]">View all venues <Icon name="arrow" className="h-4 w-4" /></Link>
+              </div>
+              <p className="text-sm text-slate-500">Find the right setting for your next campus event.</p>
+            </div>
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              {venues.map((venue) => (
+                <article key={venue.name} className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/[.07]">
+                  <div className="relative h-56 overflow-hidden bg-slate-200">
+                    <img src={venue.image} alt={venue.alt} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <span className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-emerald-700 shadow-sm"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />AVAILABLE</span>
+                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#101c38]/65 to-transparent" />
+                  </div>
+                  <div className="flex items-center justify-between p-5">
+                    <div><h3 className="font-display text-lg font-bold text-[#13203e]">{venue.name}</h3><p className="mt-1 flex items-center gap-1.5 text-xs text-slate-500"><Icon name="people" className="h-3.5 w-3.5" />{venue.capacity}</p></div>
+                    <span aria-hidden="true" className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 text-[#13203e] transition group-hover:border-[#9f263d] group-hover:bg-[#9f263d] group-hover:text-white"><Icon name="arrow" className="h-4 w-4" /></span>
+                  </div>
+                  {/* Stretched-link: the whole card is now the real hit target, not just the 40px circle */}
+                  <Link to="/login" aria-label={`View ${venue.name}`} className="absolute inset-0 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9f263d]"></Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-5 py-24 lg:px-8 lg:py-28">
+          <div className="relative mx-auto flex max-w-[1120px] flex-col items-center justify-between gap-7 overflow-hidden rounded-3xl bg-[#9f263d] px-7 py-12 text-center text-white sm:px-12 lg:flex-row lg:text-left">
+            <div className="absolute -right-16 -top-28 h-72 w-72 rounded-full border-[45px] border-white/[.06]" />
+            <div className="relative"><p className="text-xs font-bold tracking-[.15em] text-rose-100">READY TO GET STARTED?</p><h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.035em] sm:text-4xl">Your perfect venue is waiting.</h2><p className="mt-3 text-sm text-rose-100">Sign in with your campus account and book in minutes.</p></div>
+            {/* Colour merge: #8f2036 -> #9f263d (single brand maroon everywhere) */}
+            <Link to="/login" className="relative inline-flex shrink-0 items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-[#9f263d] shadow-lg transition hover:-translate-y-0.5">Browse venues <Icon name="arrow" className="h-4 w-4" /></Link>
+          </div>
+        </section>
+      </main>
+
+      {/* Fix 12: footer grid rebalanced so the logo column no longer dwarfs the link columns */}
+      <footer id="contact" className="border-t-4 border-[#9f263d] bg-[#0c1730] text-slate-300">
+        <div className="mx-auto grid max-w-[1180px] gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-[1.1fr_.8fr_.8fr_1fr] lg:px-8">
           <div>
-            <h2 className="text-lg font-bold">
-              <span>Venue</span><span className="text-red-500">Vault</span>
-            </h2>
-            <p className="text-gray-400 text-sm italic mt-1">Better Venues. Greater Moments.</p>
+            <Logo light />
+            <p className="mt-5 max-w-xs text-sm leading-6 text-slate-400">Intelligent venue booking for a connected, efficient, and paperless campus.</p>
           </div>
-
-          <div className="flex gap-6 mt-4 md:mt-0 text-gray-300 text-sm">
-            <a href="/">Home</a>
-            <a href="/venues">Venues</a>
-            <a href="/about">About</a>
-            <a href="/contact">Help</a>
-          </div>
-
-          <div className="flex gap-4 mt-4 md:mt-0 text-gray-300">
-            <Mail size={18} />
-            <Globe size={18} />
-            <MessageCircle size={18} />
-          </div>
+          <div><h3 className="text-xs font-bold tracking-[.12em] text-white">QUICK LINKS</h3><div className="mt-5 flex flex-col gap-3 text-sm text-slate-400"><a href="#home">Home</a><a href="#venues">Venues</a></div></div>
+          <div><h3 className="text-xs font-bold tracking-[.12em] text-white">PLATFORM</h3><div className="mt-5 flex flex-col gap-3 text-sm text-slate-400"><Link to="/login">Student portal</Link><Link to="/login?portal=admin">Admin portal</Link><a href="mailto:help@venuevault.edu">Support</a></div></div>
+          {/* Colour merge: #d5576e -> #e26278 (reuse the hero accent instead of a near-duplicate shade) */}
+          <div><h3 className="text-xs font-bold tracking-[.12em] text-white">CONTACT</h3><div className="mt-5 flex flex-col gap-4 text-sm text-slate-400"><p className="flex gap-2.5"><Icon name="map" className="mt-0.5 h-4 w-4 shrink-0 text-[#e26278]" />Campus Administration Block</p><a href="mailto:help@venuevault.edu" className="flex gap-2.5"><Icon name="mail" className="h-4 w-4 shrink-0 text-[#e26278]" />help@venuevault.edu</a></div></div>
         </div>
-
-        <div className="flex flex-col md:flex-row justify-between text-gray-500 text-xs mt-4">
-          <p>© 2026 VenueVault. All rights reserved.</p>
-          <p className="italic">Making campus events effortless</p>
+        <div className="border-t border-white/[.08]">
+          {/* Fix 4: 11px -> text-xs */}
+          <div className="mx-auto flex max-w-[1180px] flex-col justify-between gap-2 px-5 py-5 text-xs text-slate-500 sm:flex-row lg:px-8"><p>© {now.getFullYear()} VenueVault. All rights reserved.</p><p>Built for a smarter campus.</p></div>
         </div>
       </footer>
-
     </div>
-  )
+  );
 }

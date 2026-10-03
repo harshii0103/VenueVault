@@ -16,3 +16,12 @@ node_modules
 dist
 dist-ssr
 *.local
+# Frontend / editor
+node_modules/
+dist/
+dist-ssr/
+.env
+.env.*
+.vscode/
+.idea/
+.DS_Store
