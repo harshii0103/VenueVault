@@ -4,10 +4,21 @@ import { useAuth } from '../context/AuthContext'
 import { currentUser } from '../data/mockData'
 import { AuthLayout, TextField, PasswordField, Segmented, Banner, SubmitButton } from '../components/auth'
 
-// TODO: replace with your real API call (return { ok, message }).
-async function authenticate() {
-  await new Promise((r) => setTimeout(r, 700))
-  return { ok: true }
+async function authenticate({ identifier, password }) {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: identifier, password }),
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      return { ok: false, message: typeof data.detail === 'string' ? data.detail : 'Login failed' }
+    }
+    return { ok: true, data }
+  } catch (err) {
+    return { ok: false, message: 'Backend se connection nahi ho raha' }
+  }
 }
 
 export default function Login() {
@@ -36,6 +47,7 @@ export default function Login() {
     try {
       const res = await authenticate({ ...form, portal })
       if (!res.ok) throw new Error(res.message || 'Incorrect email/ID or password.')
+      alert(`Login successful! Welcome ${res.data.full_name}`)
       // TODO (backend): use the real user/token from the API response instead of currentUser.
       if (portal === 'student') { login(currentUser); navigate('/dashboard'); return }
       setStatus({ loading: false, error: '', success: true }) // admin dashboard comes in a later step
